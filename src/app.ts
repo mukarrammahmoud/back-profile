@@ -1,10 +1,11 @@
 import express from 'express';
+import profileRoutes from './routes/profileRoutes';
+
 const app = express();
 
 app.use(express.json());
 
-app.get('/test', (req, res) => {
-    res.json({ message: "الباك إند يعمل بنجاح! 🚀" });
-});
+// Routes
+app.use('/api/profile', profileRoutes);
 
-export default app;
+export default app;
