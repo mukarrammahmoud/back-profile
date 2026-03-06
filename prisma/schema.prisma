@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Profile {
+  id          Int       @id @default(autoincrement())
+  fullName    String    @map("full_name") @db.VarChar(100)
+  title       String?   @db.VarChar(100)
+  bio         String?
+  cvUrl       String?   @map("cv_url")
+  socialLinks Json?     @map("social_links")
+  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+
+  @@map("profile")
+}
+
+model Project {
+  id           Int       @id @default(autoincrement())
+  title        String    @db.VarChar(255)
+  description  String?
+  imageUrl     String?   @map("image_url")
+  technologies String[]
+  demoUrl      String?   @map("demo_url")
+  repoUrl      String?   @map("repo_url")
+  isFeatured   Boolean?  @default(false) @map("is_featured")
+  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("projects")
+}
+
+model Skill {
+  id               Int     @id @default(autoincrement())
+  name             String  @db.VarChar(50)
+  category         String? @db.VarChar(50)
+  proficiencyLevel Int?    @map("proficiency_level")
+  iconUrl          String? @map("icon_url")
+
+  @@map("skills")
+}
+
+model History {
+  id               Int       @id @default(autoincrement())
+  type             String?   @db.VarChar(20)
+  organization     String    @db.VarChar(150)
+  positionOrDegree String?   @map("position_or_degree") @db.VarChar(150)
+  description      String?
+  startDate        DateTime? @map("start_date") @db.Date
+  endDate          DateTime? @map("end_date") @db.Date
+  isCurrent        Boolean?  @default(false) @map("is_current")
+
+  @@map("history")
+}
+
+model ContactMessage {
+  id          Int       @id @default(autoincrement())
+  senderName  String    @map("sender_name") @db.VarChar(100)
+  senderEmail String    @map("sender_email") @db.VarChar(255)
+  subject     String?   @db.VarChar(200)
+  message     String
+  isRead      Boolean?  @default(false) @map("is_read")
+  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+
+  @@map("contact_messages")
+}
