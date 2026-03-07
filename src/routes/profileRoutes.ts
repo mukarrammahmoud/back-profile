@@ -1,9 +1,10 @@
 import { Router } from 'express';
-import { getProfile } from '../controllers/profileController';
+import { getProfile, updateProfile } from '../controllers/profileController';
 
 const router = Router();
 
-// GET /api/profile
-router.get('/', getProfile);
+router.get('/', getProfile);    // GET  /api/profile
+router.put('/', updateProfile); // PUT  /api/profile
 
 export default router;
+
