@@ -1,10 +1,18 @@
 {
-    "compilerOptions": {
-        "allowImportingTsExtensions": true,
-        "esModuleInterop": true
-    },
-    "include": [
-        "src/**/*",
-        "prisma/**/*"
-    ]
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "CommonJS",
+    "moduleResolution": "Node",
+    "lib": ["ES2022"],
+    "rootDir": ".",
+    "outDir": "dist",
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "noUncheckedIndexedAccess": true,
+    "forceConsistentCasingInFileNames": true
+  },
+  "include": ["src/**/*.ts", "prisma/**/*.ts", "tests/**/*.ts", "test-db.ts"],
+  "exclude": ["node_modules", "dist"]
 }

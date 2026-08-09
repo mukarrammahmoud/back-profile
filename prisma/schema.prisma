@@ -6,28 +6,77 @@ datasource db {
   provider = "postgresql"
 }
 
+model Admin {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  passwordHash String   @map("password_hash")
+  displayName  String?  @map("display_name") @db.VarChar(100)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
 model Profile {
-  id          Int       @id @default(autoincrement())
-  fullName    String    @map("full_name") @db.VarChar(100)
-  title       String?   @db.VarChar(100)
-  bio         String?
-  cvUrl       String?   @map("cv_url")
-  socialLinks Json?     @map("social_links")
-  updatedAt   DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamp(6)
+  id            Int      @id @default(autoincrement())
+  fullName      String   @map("full_name") @db.VarChar(100)
+  title         String?  @db.VarChar(100)
+  titles        String[] @default([])
+  shortBio      String?  @map("short_bio") @db.VarChar(300)
+  bio           String?
+  avatarUrl     String?  @map("avatar_url")
+  heroImageUrl  String?  @map("hero_image_url")
+  cvUrl         String?  @map("cv_url")
+  email         String?  @db.VarChar(255)
+  phone         String?  @db.VarChar(50)
+  location      String?  @db.VarChar(150)
+  availability  String?  @db.VarChar(100)
+  socialLinks   Json?    @map("social_links")
+  languages     Json?
+  stats         Json?
+  callToActions Json?    @map("call_to_actions")
+  updatedAt     DateTime @default(now()) @updatedAt @map("updated_at")
 
   @@map("profile")
 }
 
+model PortfolioSettings {
+  id              Int      @id @default(1)
+  siteName        String   @default("My Portfolio") @map("site_name") @db.VarChar(120)
+  siteDescription String?  @map("site_description")
+  logoUrl         String?  @map("logo_url")
+  faviconUrl      String?  @map("favicon_url")
+  primaryColor    String   @default("#2563eb") @map("primary_color") @db.VarChar(20)
+  secondaryColor  String   @default("#0f172a") @map("secondary_color") @db.VarChar(20)
+  theme           String   @default("system") @db.VarChar(20)
+  fonts           Json?
+  heroBackground  Json?    @map("hero_background")
+  sectionConfig   Json?    @map("section_config")
+  seo             Json?
+  customDomain    String?  @map("custom_domain") @db.VarChar(255)
+  language        String   @default("en") @db.VarChar(10)
+  direction       String   @default("ltr") @db.VarChar(3)
+  custom          Json?
+  updatedAt       DateTime @default(now()) @updatedAt @map("updated_at")
+
+  @@map("portfolio_settings")
+}
+
 model Project {
-  id           Int       @id @default(autoincrement())
-  title        String    @db.VarChar(255)
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(255)
+  slug         String?  @unique @db.VarChar(255)
   description  String?
-  imageUrl     String?   @map("image_url")
-  technologies String[]
-  demoUrl      String?   @map("demo_url")
-  repoUrl      String?   @map("repo_url")
-  isFeatured   Boolean?  @default(false) @map("is_featured")
-  createdAt    DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  imageUrl     String?  @map("image_url")
+  gallery      String[] @default([])
+  technologies String[] @default([])
+  demoUrl      String?  @map("demo_url")
+  repoUrl      String?  @map("repo_url")
+  isFeatured   Boolean  @default(false) @map("is_featured")
+  isPublished  Boolean  @default(true) @map("is_published")
+  sortOrder    Int      @default(0) @map("sort_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
 
   @@map("projects")
 }
@@ -38,6 +87,8 @@ model Skill {
   category         String? @db.VarChar(50)
   proficiencyLevel Int?    @map("proficiency_level")
   iconUrl          String? @map("icon_url")
+  isVisible        Boolean @default(true) @map("is_visible")
+  sortOrder        Int     @default(0) @map("sort_order")
 
   @@map("skills")
 }
@@ -48,21 +99,52 @@ model History {
   organization     String    @db.VarChar(150)
   positionOrDegree String?   @map("position_or_degree") @db.VarChar(150)
   description      String?
+  location         String?   @db.VarChar(150)
+  organizationUrl  String?   @map("organization_url")
   startDate        DateTime? @map("start_date") @db.Date
   endDate          DateTime? @map("end_date") @db.Date
-  isCurrent        Boolean?  @default(false) @map("is_current")
+  isCurrent        Boolean   @default(false) @map("is_current")
+  isVisible        Boolean   @default(true) @map("is_visible")
+  sortOrder        Int       @default(0) @map("sort_order")
 
   @@map("history")
 }
 
+model Section {
+  id        Int      @id @default(autoincrement())
+  key       String   @unique @db.VarChar(80)
+  title     String   @db.VarChar(150)
+  type      String   @db.VarChar(50)
+  content   Json
+  isVisible Boolean  @default(true) @map("is_visible")
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("sections")
+}
+
+model MediaAsset {
+  id           Int      @id @default(autoincrement())
+  filename     String   @db.VarChar(255)
+  originalName String   @map("original_name") @db.VarChar(255)
+  mimeType     String   @map("mime_type") @db.VarChar(100)
+  size         Int
+  url          String
+  provider     String   @default("local") @db.VarChar(30)
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("media_assets")
+}
+
 model ContactMessage {
-  id          Int       @id @default(autoincrement())
-  senderName  String    @map("sender_name") @db.VarChar(100)
-  senderEmail String    @map("sender_email") @db.VarChar(255)
-  subject     String?   @db.VarChar(200)
+  id          Int      @id @default(autoincrement())
+  senderName  String   @map("sender_name") @db.VarChar(100)
+  senderEmail String   @map("sender_email") @db.VarChar(255)
+  subject     String?  @db.VarChar(200)
   message     String
-  isRead      Boolean?  @default(false) @map("is_read")
-  createdAt   DateTime? @default(now()) @map("created_at") @db.Timestamp(6)
+  isRead      Boolean  @default(false) @map("is_read")
+  createdAt   DateTime @default(now()) @map("created_at")
 
   @@map("contact_messages")
 }
